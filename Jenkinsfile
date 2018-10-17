@@ -1,6 +1,5 @@
 pipeline {
     agent {
-        label 'local'
         docker {
             dockerfile true
         }   
