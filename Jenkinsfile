@@ -1,10 +1,9 @@
 pipeline {
     agent {
         label 'local'
-        
-    }
-    docker {
-        dockerfile true
+        docker {
+            dockerfile true
+        }   
     }
     
     stages {
