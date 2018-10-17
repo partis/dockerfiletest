@@ -1,5 +1,5 @@
 pipeline {
-    agent {
+    docker {
         label 'docker'
         dockerfile true
     }
