@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM docker.registry:8123/centos:latest
 MAINTAINER Andrew Partis (andrew.partis@accenture.com)
 
 ##dependencies
