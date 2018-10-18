@@ -27,6 +27,7 @@ pipeline {
     stages {
         stage("Get Version"){
             steps { script {
+                println "UPDATE_VERSION: ${VERSION_UPDATE}"
                 if(BRANCH.equals("master")){
                     OLD_RELEASE = sh(script: 'git branch -r | sed -n "s# *origin/\\(archive/\\)*R##p" | sort -V | tail -1', returnStdout: true).trim()
                     if(OLD_RELEASE.equals('')){
