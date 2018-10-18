@@ -37,7 +37,7 @@ pipeline {
                         String[] versions = OLD_RELEASE.split('\\.')
                         RELEASE = versions[0]+"."+(Integer.parseInt(versions[1])+1)
                     }
-                    if(!BRANCH.equals("master") {
+                    if(!BRANCH.equals("master")) {
                         FEATURE = true
                     }
                 }
