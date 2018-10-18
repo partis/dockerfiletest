@@ -13,9 +13,6 @@ pipeline {
     
     stages {
         stage("Get Version"){
-            when {
-                expression { ! REBUILD }
-            }
             steps { script {
                 if(BRANCH.equals("master")){
                     OLD_RELEASE = sh(script: 'git branch -r | sed -n "s# *origin/\\(archive/\\)*R##p" | sort -V | tail -1', returnStdout: true).trim()
