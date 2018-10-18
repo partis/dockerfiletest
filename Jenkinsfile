@@ -27,15 +27,7 @@ pipeline {
     stages {
         stage("Get Version"){
             steps { script {
-                if(BRANCH.equals("master")){
-                    OLD_RELEASE = sh(script: 'git branch -r | sed -n "s# *origin/\\(archive/\\)*R##p" | sort -V | tail -1', returnStdout: true).trim()
-                    if(OLD_RELEASE.equals('')){
-                        RELEASE = "1.0"
-                    }else{
-                        String[] versions = OLD_RELEASE.split('\\.')
-                        RELEASE = versions[0]+"."+(Integer.parseInt(versions[1])+1)
-                    }
-                }else if(BRANCH.matches(/R[0-9]*\.[0-9]*/)){
+                if(BRANCH.matches(/R[0-9]*\.[0-9]*/)){
                     RELEASE = BRANCH.replace('R', '')
                 }else{
                     OLD_RELEASE = sh(script: 'git branch -r | sed -n "s# *origin/\\(archive/\\)*R##p" | sort -V | tail -1', returnStdout: true).trim()
@@ -45,16 +37,21 @@ pipeline {
                         String[] versions = OLD_RELEASE.split('\\.')
                         RELEASE = versions[0]+"."+(Integer.parseInt(versions[1])+1)
                     }
-                    FEATRUE = true
+                    if(!BRANCH.equals("master") {
+                        FEATURE = true
+                    }
                 }
                 println "RELEASE: ${RELEASE}"
                 OLD_VERSION = sh(script: """git tag | grep "^${RELEASE}.[0-9]*\$" | sort -V | tail -1 | cat""", returnStdout: true).trim()
                 println "OLD_VERSION: ${OLD_VERSION}"
                 if(OLD_VERSION.equals('')){
-                    VERSION = FEATURE ? "${RELEASE}.0-SNAPSHOT" : "${RELEASE}.0"
+                    VERSION = "${RELEASE}.0"       
                 }else{
                     PATCH = OLD_VERSION.split('\\.')[2]
-                    VERSION = FEATURE ? "${RELEASE}."+(Integer.parseInt(PATCH)+1) + "-SNAPSHOT" : "${RELEASE}."+(Integer.parseInt(PATCH)+1)
+                    VERSION = "${RELEASE}."+(Integer.parseInt(PATCH)+1)
+                }
+                if(FEATURE) {
+                    VERSION = "${VERSION}-SNAPSHOT
                 }
                 println "Using VERSION: ${VERSION}"
                 currentBuild.displayName = currentBuild.displayName+": "+VERSION
