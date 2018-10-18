@@ -1,3 +1,16 @@
+#!/usr/bin/env groovy
+
+// GLOBAL PROPERTIES
+String  VERSION = "" // e.g. 1.1.1
+String  RELEASE      = "" // e.g. 1.1
+Boolean VERIFY       = false
+Boolean REBUILD      = false
+Boolean PUBLISH      = false
+String  BRANCH       = env.BRANCH_NAME // Special Multi-Branch variable
+
+String CHECKOUT_BRANCH  = "*/"+BRANCH
+String CHECKOUT_REFSPEC = "refs/heads/"+BRANCH
+
 pipeline {
     agent {
         dockerfile {
