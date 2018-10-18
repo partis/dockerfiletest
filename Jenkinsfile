@@ -51,10 +51,10 @@ pipeline {
                 OLD_VERSION = sh(script: """git tag | grep "^${RELEASE}.[0-9]*\$" | sort -V | tail -1 | cat""", returnStdout: true).trim()
                 println "OLD_VERSION: ${OLD_VERSION}"
                 if(OLD_VERSION.equals('')){
-                    VERSION = $FEATURE ? "${RELEASE}.0" : "${RELEASE}.0-SANPSHOT"
+                    VERSION = FEATURE ? "${RELEASE}.0" : "${RELEASE}.0-SANPSHOT"
                 }else{
                     PATCH = OLD_VERSION.split('\\.')[2]
-                    VERSION = $FEATURE ? "${RELEASE}."+(Integer.parseInt(PATCH)+1) : "${RELEASE}."+(Integer.parseInt(PATCH)+1) + "-SNAPSHOT"
+                    VERSION = FEATURE ? "${RELEASE}."+(Integer.parseInt(PATCH)+1) : "${RELEASE}."+(Integer.parseInt(PATCH)+1) + "-SNAPSHOT"
                 }
                 println "Using VERSION: ${VERSION}"
                 currentBuild.displayName = currentBuild.displayName+": "+VERSION
