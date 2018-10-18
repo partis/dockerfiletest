@@ -6,6 +6,7 @@ String  RELEASE      = "" // e.g. 1.1
 Boolean VERIFY       = false
 Boolean REBUILD      = false
 Boolean PUBLISH      = false
+Boolean FEATURE      = false
 String  BRANCH       = env.BRANCH_NAME // Special Multi-Branch variable
 
 String CHECKOUT_BRANCH  = "*/"+BRANCH
@@ -20,14 +21,12 @@ pipeline {
     parameters {
         booleanParam(name: 'PUBLISH', defaultValue: false, description: 'Whether to build and publish artifacts')
         booleanParam(name: 'REBUILD', defaultValue: false, description: 'To rebuild an old Version, put the version number in the branch varaible')
-        choice(name: 'VERSION_UPDATE', choices: "DOT\nMINOR\nMAJOR", description: 'Choose the type of version update')
         string(name: 'TAG', defaultValue: "1.0.1", description: 'Tag to build (If REBUILD Ticked)')
     }
     
     stages {
         stage("Get Version"){
             steps { script {
-                println "UPDATE_VERSION: ${VERSION_UPDATE}"
                 if(BRANCH.equals("master")){
                     OLD_RELEASE = sh(script: 'git branch -r | sed -n "s# *origin/\\(archive/\\)*R##p" | sort -V | tail -1', returnStdout: true).trim()
                     if(OLD_RELEASE.equals('')){
@@ -41,20 +40,21 @@ pipeline {
                 }else{
                     OLD_RELEASE = sh(script: 'git branch -r | sed -n "s# *origin/\\(archive/\\)*R##p" | sort -V | tail -1', returnStdout: true).trim()
                     if(OLD_RELEASE.equals('')){
-                        RELEASE = "1.0.0-SNAPSHOT"
+                        RELEASE = "1.0"
                     }else{
                         String[] versions = OLD_RELEASE.split('\\.')
-                        RELEASE = versions[0]+"."+(Integer.parseInt(versions[1])+1) + "-SNAPSHOT"
+                        RELEASE = versions[0]+"."+(Integer.parseInt(versions[1])+1)
                     }
+                    FEATRUE = true
                 }
                 println "RELEASE: ${RELEASE}"
                 OLD_VERSION = sh(script: """git tag | grep "^${RELEASE}.[0-9]*\$" | sort -V | tail -1 | cat""", returnStdout: true).trim()
                 println "OLD_VERSION: ${OLD_VERSION}"
                 if(OLD_VERSION.equals('')){
-                    VERSION = "${RELEASE}.0"
+                    VERSION = $FEATURE ? "${RELEASE}.0" : "${RELEASE}.0-SANPSHOT"
                 }else{
                     PATCH = OLD_VERSION.split('\\.')[2]
-                    VERSION = "${RELEASE}."+(Integer.parseInt(PATCH)+1)
+                    VERSION = $FEATURE ? "${RELEASE}."+(Integer.parseInt(PATCH)+1) : "${RELEASE}."+(Integer.parseInt(PATCH)+1) + "-SNAPSHOT"
                 }
                 println "Using VERSION: ${VERSION}"
                 currentBuild.displayName = currentBuild.displayName+": "+VERSION
