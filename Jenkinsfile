@@ -23,6 +23,9 @@ pipeline {
         booleanParam(name: 'REBUILD', defaultValue: false, description: 'To rebuild an old Version, put the version number in the branch varaible')
         string(name: 'TAG', defaultValue: "1.0.1", description: 'Tag to build (If REBUILD Ticked)')
     }
+    triggers {
+        cron(@midnight)
+    }
     
     stages {
         stage("Get Version"){
