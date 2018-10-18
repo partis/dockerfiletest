@@ -24,7 +24,7 @@ pipeline {
         string(name: 'TAG', defaultValue: "1.0.1", description: 'Tag to build (If REBUILD Ticked)')
     }
     triggers {
-        cron(@midnight)
+        cron('@midnight')
     }
     
     stages {
