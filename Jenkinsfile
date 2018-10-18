@@ -51,7 +51,7 @@ pipeline {
                     VERSION = "${RELEASE}."+(Integer.parseInt(PATCH)+1)
                 }
                 if(FEATURE) {
-                    VERSION = "${VERSION}-SNAPSHOT
+                    VERSION = "${VERSION}-SNAPSHOT"
                 }
                 println "Using VERSION: ${VERSION}"
                 currentBuild.displayName = currentBuild.displayName+": "+VERSION
